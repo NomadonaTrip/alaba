@@ -4,6 +4,45 @@ import os
 
 import pytest
 
+# ---------------------------------------------------------------------------
+# Set minimum required env vars early (before pytest collects modules) so
+# that module-level SQLAlchemy engine creation in db.py succeeds at import
+# time.  The per-test `env_setup` fixture below will override these with
+# monkeypatch for the duration of each test.
+# ---------------------------------------------------------------------------
+_EARLY_ENV = {
+    "ENVIRONMENT": "dev",
+    "DATABASE_URL": "postgresql+asyncpg://alaba:alaba_dev_password@localhost:5432/alaba_test",
+    "REDIS_URL": "redis://localhost:6379/1",
+    "JWT_SECRET": "test_jwt_secret",
+    "JWT_ALGORITHM": "HS256",
+    "JWT_EXPIRY_HOURS": "24",
+    "MAX_ACTIVE_DEVICES_PER_USER": "2",
+    "DEVICE_DEACTIVATION_COOLDOWN_DAYS": "90",
+    "OTP_PROVIDER": "mock",
+    "OTP_LENGTH": "6",
+    "OTP_EXPIRY_MINUTES": "10",
+    "OTP_MAX_ATTEMPTS": "5",
+    "PAYMENT_PROVIDER": "paystack",
+    "PAYSTACK_BASE_URL": "https://api.paystack.co",
+    "PAYSTACK_SECRET_KEY": "sk_test_dummy",
+    "PAYSTACK_PUBLIC_KEY": "pk_test_dummy",
+    "PAYSTACK_WEBHOOK_SECRET": "dummy_webhook_secret",
+    "PAYOUT_PROVIDER": "noop",
+    "CORS_ORIGINS": "http://localhost:3000",
+    "S3_PUBLIC_ENDPOINT": "http://localhost:9000",
+    "S3_INTERNAL_ENDPOINT": "http://localhost:9000",
+    "S3_ACCESS_KEY": "test_access_key",
+    "S3_SECRET_KEY": "test_secret_key",
+    "S3_REGION": "us-east-1",
+    "MINIO_BUCKET_SOURCE": "alaba-source",
+    "MINIO_BUCKET_TRANSCODED": "alaba-transcoded",
+    "MINIO_BUCKET_PREVIEWS": "alaba-previews",
+}
+
+for _k, _v in _EARLY_ENV.items():
+    os.environ.setdefault(_k, _v)
+
 
 @pytest.fixture(autouse=True)
 def env_setup(monkeypatch):
