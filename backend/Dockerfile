@@ -18,6 +18,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 COPY alaba ./alaba
 COPY alembic ./alembic
 COPY alembic.ini ./
+COPY tests ./tests
 
 # Re-run sync now that source is present to install the project itself
 RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-dev

@@ -38,7 +38,7 @@ worker-shell: ## Exec into backend-worker container
 	docker exec -it alaba-backend-worker bash
 
 test: ## Run backend pytest
-	docker exec alaba-backend-api pytest -v
+	docker exec alaba-backend-api uv run --group dev pytest -v
 
 seed: ## Seed sample films, producers, viewers, licenses (script arrives in Wave 3)
 	@echo "make seed is not yet wired. The seed script (infra/scripts/seed_films.py) is created in Wave 3."
