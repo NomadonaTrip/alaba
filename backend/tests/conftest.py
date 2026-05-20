@@ -1,0 +1,40 @@
+"""Shared pytest fixtures."""
+
+import os
+
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def env_setup(monkeypatch):
+    """Force a known-safe environment for every test."""
+    monkeypatch.setenv("ENVIRONMENT", "dev")
+    monkeypatch.setenv(
+        "DATABASE_URL",
+        "postgresql+asyncpg://alaba:alaba_dev_password@localhost:5432/alaba_test",
+    )
+    monkeypatch.setenv("REDIS_URL", "redis://localhost:6379/1")
+    monkeypatch.setenv("JWT_SECRET", "test_jwt_secret")
+    monkeypatch.setenv("JWT_ALGORITHM", "HS256")
+    monkeypatch.setenv("JWT_EXPIRY_HOURS", "24")
+    monkeypatch.setenv("MAX_ACTIVE_DEVICES_PER_USER", "2")
+    monkeypatch.setenv("DEVICE_DEACTIVATION_COOLDOWN_DAYS", "90")
+    monkeypatch.setenv("OTP_PROVIDER", "mock")
+    monkeypatch.setenv("OTP_LENGTH", "6")
+    monkeypatch.setenv("OTP_EXPIRY_MINUTES", "10")
+    monkeypatch.setenv("OTP_MAX_ATTEMPTS", "5")
+    monkeypatch.setenv("PAYMENT_PROVIDER", "paystack")
+    monkeypatch.setenv("PAYSTACK_BASE_URL", "https://api.paystack.co")
+    monkeypatch.setenv("PAYSTACK_SECRET_KEY", "sk_test_dummy")
+    monkeypatch.setenv("PAYSTACK_PUBLIC_KEY", "pk_test_dummy")
+    monkeypatch.setenv("PAYSTACK_WEBHOOK_SECRET", "dummy_webhook_secret")
+    monkeypatch.setenv("PAYOUT_PROVIDER", "noop")
+    monkeypatch.setenv("CORS_ORIGINS", "http://localhost:3000")
+    monkeypatch.setenv("S3_PUBLIC_ENDPOINT", "http://localhost:9000")
+    monkeypatch.setenv("S3_INTERNAL_ENDPOINT", "http://localhost:9000")
+    monkeypatch.setenv("S3_ACCESS_KEY", "test_access_key")
+    monkeypatch.setenv("S3_SECRET_KEY", "test_secret_key")
+    monkeypatch.setenv("S3_REGION", "us-east-1")
+    monkeypatch.setenv("MINIO_BUCKET_SOURCE", "alaba-source")
+    monkeypatch.setenv("MINIO_BUCKET_TRANSCODED", "alaba-transcoded")
+    monkeypatch.setenv("MINIO_BUCKET_PREVIEWS", "alaba-previews")
