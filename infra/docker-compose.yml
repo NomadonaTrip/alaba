@@ -90,6 +90,86 @@ services:
       - "1025:1025"
       - "8025:8025"
 
+  backend-api:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: alaba-backend-api
+    command: ["uvicorn", "alaba.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      JWT_EXPIRY_HOURS: ${JWT_EXPIRY_HOURS}
+      MAX_ACTIVE_DEVICES_PER_USER: ${MAX_ACTIVE_DEVICES_PER_USER}
+      DEVICE_DEACTIVATION_COOLDOWN_DAYS: ${DEVICE_DEACTIVATION_COOLDOWN_DAYS}
+      OTP_PROVIDER: ${OTP_PROVIDER}
+      OTP_LENGTH: ${OTP_LENGTH}
+      OTP_EXPIRY_MINUTES: ${OTP_EXPIRY_MINUTES}
+      OTP_MAX_ATTEMPTS: ${OTP_MAX_ATTEMPTS}
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER}
+      PAYSTACK_BASE_URL: ${PAYSTACK_BASE_URL}
+      PAYSTACK_SECRET_KEY: ${PAYSTACK_SECRET_KEY}
+      PAYSTACK_PUBLIC_KEY: ${PAYSTACK_PUBLIC_KEY}
+      PAYSTACK_WEBHOOK_SECRET: ${PAYSTACK_WEBHOOK_SECRET}
+      PAYOUT_PROVIDER: ${PAYOUT_PROVIDER}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      S3_PUBLIC_ENDPOINT: ${S3_PUBLIC_ENDPOINT}
+      S3_INTERNAL_ENDPOINT: ${S3_INTERNAL_ENDPOINT}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_REGION: ${S3_REGION}
+      MINIO_BUCKET_SOURCE: ${MINIO_BUCKET_SOURCE}
+      MINIO_BUCKET_TRANSCODED: ${MINIO_BUCKET_TRANSCODED}
+      MINIO_BUCKET_PREVIEWS: ${MINIO_BUCKET_PREVIEWS}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../backend/alaba:/app/alaba
+      - ../backend/alembic:/app/alembic
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/health\", timeout=2)'"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  backend-worker:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: alaba-backend-worker
+    command: ["python", "-c", "import time; print('worker placeholder; Celery wiring in Wave 3'); time.sleep(86400)"]
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      PAYSTACK_BASE_URL: ${PAYSTACK_BASE_URL}
+      PAYSTACK_SECRET_KEY: ${PAYSTACK_SECRET_KEY}
+      PAYSTACK_PUBLIC_KEY: ${PAYSTACK_PUBLIC_KEY}
+      S3_PUBLIC_ENDPOINT: ${S3_INTERNAL_ENDPOINT}
+      S3_INTERNAL_ENDPOINT: ${S3_INTERNAL_ENDPOINT}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      MINIO_BUCKET_SOURCE: ${MINIO_BUCKET_SOURCE}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
 volumes:
   postgres_data:
   redis_data:
