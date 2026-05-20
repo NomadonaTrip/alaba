@@ -170,6 +170,23 @@ services:
       minio:
         condition: service_healthy
 
+  web:
+    build:
+      context: ../web
+      dockerfile: Dockerfile
+    container_name: alaba-web
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      BACKEND_INTERNAL_URL: ${BACKEND_INTERNAL_URL}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../web/src:/app/src
+      - ../web/public:/app/public
+    depends_on:
+      backend-api:
+        condition: service_healthy
+
 volumes:
   postgres_data:
   redis_data:
