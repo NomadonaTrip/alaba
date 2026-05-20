@@ -1,6 +1,7 @@
 """Models import + table-existence smoke tests."""
 
 from alaba.models import (
+    Admin,
     AdminAction,
     Base,
     Film,
@@ -15,7 +16,8 @@ from alaba.models import (
 
 
 def test_all_models_import():
-    """All 9 models can be imported from alaba.models."""
+    """All 10 models can be imported from alaba.models."""
+    assert Admin.__tablename__ == "admins"
     assert User.__tablename__ == "users"
     assert UserDevice.__tablename__ == "user_devices"
     assert OtpCode.__tablename__ == "otp_codes"
@@ -30,6 +32,7 @@ def test_all_models_import():
 def test_metadata_lists_all_tables():
     table_names = set(Base.metadata.tables.keys())
     expected = {
+        "admins",
         "users",
         "user_devices",
         "otp_codes",

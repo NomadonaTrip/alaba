@@ -1,5 +1,6 @@
 """All SQLAlchemy models. Importing this module registers them with Base.metadata."""
 
+from alaba.models.admin import Admin
 from alaba.models.admin_action import AdminAction
 from alaba.models.base import Base
 from alaba.models.film import Film
@@ -12,6 +13,7 @@ from alaba.models.user import User
 from alaba.models.user_device import UserDevice
 
 __all__ = [
+    "Admin",
     "AdminAction",
     "Base",
     "Film",
