@@ -1,10 +1,21 @@
 """FastAPI application entry point."""
 
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from alaba.api import admin_users, auth, devices, health, me
 from alaba.config import get_settings
+
+# Ensure dev loggers (notably alaba.otp.mock) propagate to uvicorn's stdout
+# so `docker logs alaba-backend-api` shows OTP codes in dev. Uvicorn's default
+# config doesn't configure non-uvicorn loggers; this fills the gap.
+logging.getLogger("alaba").setLevel(logging.INFO)
+if not logging.getLogger("alaba").handlers:
+    _h = logging.StreamHandler()
+    _h.setFormatter(logging.Formatter("%(asctime)s %(levelname)s [%(name)s] %(message)s"))
+    logging.getLogger("alaba").addHandler(_h)
 
 
 def create_app() -> FastAPI:
