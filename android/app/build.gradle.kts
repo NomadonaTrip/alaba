@@ -67,6 +67,9 @@ dependencies {
     implementation("com.squareup.moshi:moshi:1.15.1")
     implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
 
+    // Compose Navigation
+    implementation("androidx.navigation:navigation-compose:2.8.5")
+
     // EncryptedSharedPreferences
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
