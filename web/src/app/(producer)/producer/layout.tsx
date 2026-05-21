@@ -32,7 +32,7 @@ export default async function ProducerLayout({
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
-      <Sidebar email={email} role="producer" />
+      <Sidebar email={email} />
       <main className="flex-1 p-8 max-w-5xl">{children}</main>
     </div>
   );
