@@ -180,6 +180,8 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
       BACKEND_INTERNAL_URL: ${BACKEND_INTERNAL_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      NODE_ENV: development
     ports:
       - "3000:3000"
     volumes:
