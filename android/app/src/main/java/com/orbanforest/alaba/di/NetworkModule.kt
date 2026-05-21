@@ -1,7 +1,10 @@
 package com.orbanforest.alaba.di
 
 import com.orbanforest.alaba.BuildConfig
+import com.orbanforest.alaba.data.api.AuthApi
+import com.orbanforest.alaba.data.api.DevicesApi
 import com.orbanforest.alaba.data.api.HealthApi
+import com.orbanforest.alaba.data.api.MeApi
 import com.orbanforest.alaba.data.auth.AuthErrorInterceptor
 import com.orbanforest.alaba.data.auth.AuthInterceptor
 import com.squareup.moshi.Moshi
@@ -54,4 +57,16 @@ object NetworkModule {
     @Singleton
     fun provideHealthApi(retrofit: Retrofit): HealthApi =
         retrofit.create(HealthApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideDevicesApi(retrofit: Retrofit): DevicesApi = retrofit.create(DevicesApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideMeApi(retrofit: Retrofit): MeApi = retrofit.create(MeApi::class.java)
 }
