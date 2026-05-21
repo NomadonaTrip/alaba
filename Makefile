@@ -44,9 +44,9 @@ seed: ## Seed sample films, producers, viewers, licenses (script arrives in Wave
 	@echo "make seed is not yet wired. The seed script (infra/scripts/seed_films.py) is created in Wave 3."
 	@exit 1
 
-make-admin: ## Bootstrap an admin user (script arrives in Wave 1)
-	@echo "make make-admin is not yet wired. The script (infra/scripts/make_admin.py) is created in Wave 1."
-	@exit 1
+make-admin: ## Bootstrap an admin user. Usage: make make-admin email=admin@alaba.test
+	@if [ -z "$(email)" ]; then echo "Usage: make make-admin email=admin@alaba.test"; exit 1; fi
+	docker exec -it alaba-backend-api python /app/scripts/make_admin.py --email "$(email)"
 
 android-url: ## Print the backend URL Android should hit
 	@echo "Android emulator → http://10.0.2.2:8000"

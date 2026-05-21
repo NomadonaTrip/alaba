@@ -130,6 +130,7 @@ services:
       - ../backend/alaba:/app/alaba
       - ../backend/alembic:/app/alembic
       - ../backend/tests:/app/tests
+      - ./scripts:/app/scripts:ro
     depends_on:
       postgres:
         condition: service_healthy
