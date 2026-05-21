@@ -77,3 +77,20 @@ def env_setup(monkeypatch):
     monkeypatch.setenv("MINIO_BUCKET_SOURCE", "alaba-source")
     monkeypatch.setenv("MINIO_BUCKET_TRANSCODED", "alaba-transcoded")
     monkeypatch.setenv("MINIO_BUCKET_PREVIEWS", "alaba-previews")
+
+
+import pytest_asyncio
+from sqlalchemy.ext.asyncio import AsyncSession
+
+
+@pytest_asyncio.fixture
+async def db_session() -> AsyncSession:
+    """Yields a transactional session that rolls back after each test."""
+    from alaba.db import AsyncSessionLocal
+    async with AsyncSessionLocal() as session:
+        await session.begin()
+        try:
+            yield session
+        finally:
+            await session.rollback()
+            await session.close()
