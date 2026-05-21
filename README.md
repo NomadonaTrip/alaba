@@ -27,7 +27,7 @@ make migrate
 Verify:
 
 ```bash
-curl http://localhost:8000/health
+curl http://localhost:8010/health
 # → {"status":"ok","service":"alaba-backend","checks":{"database":"ok"}}
 ```
 
@@ -63,8 +63,8 @@ make android-url
 
 | Service | URL |
 |---|---|
-| Backend API | <http://localhost:8000> |
-| Backend docs (Swagger) | <http://localhost:8000/docs> |
+| Backend API | <http://localhost:8010> |
+| Backend docs (Swagger) | <http://localhost:8010/docs> |
 | Web portals (Next.js) | <http://localhost:3000> |
 | MinIO console | <http://localhost:9001> (alaba_minio_admin / alaba_minio_dev_password) |
 | tusd upload endpoint | <http://localhost:1080/files/> |

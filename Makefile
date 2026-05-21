@@ -49,9 +49,9 @@ make-admin: ## Bootstrap an admin user. Usage: make make-admin email=admin@alaba
 	docker exec -it alaba-backend-api python /app/scripts/make_admin.py --email "$(email)"
 
 android-url: ## Print the backend URL Android should hit
-	@echo "Android emulator → http://10.0.2.2:8000"
+	@echo "Android emulator → http://10.0.2.2:8010"
 	@ip=$$(ip route get 1 2>/dev/null | awk '{print $$7; exit}' || hostname -I | awk '{print $$1}'); \
-	  echo "Android real device → http://$$ip:8000"
+	  echo "Android real device → http://$$ip:8010"
 
 web-dev: ## Run Next.js dev server locally (alternative to docker)
 	cd web && npm run dev

@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -22,7 +22,7 @@ services:
     image: redis:7-alpine
     container_name: alaba-redis
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -125,7 +125,7 @@ services:
       MINIO_BUCKET_TRANSCODED: ${MINIO_BUCKET_TRANSCODED}
       MINIO_BUCKET_PREVIEWS: ${MINIO_BUCKET_PREVIEWS}
     ports:
-      - "8000:8000"
+      - "8010:8000"
     volumes:
       - ../backend/alaba:/app/alaba
       - ../backend/alembic:/app/alembic

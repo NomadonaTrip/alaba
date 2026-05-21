@@ -12,8 +12,8 @@ import pytest
 # ---------------------------------------------------------------------------
 _EARLY_ENV = {
     "ENVIRONMENT": "dev",
-    "DATABASE_URL": "postgresql+asyncpg://alaba:alaba_dev_password@localhost:5432/alaba_test",
-    "REDIS_URL": "redis://localhost:6379/1",
+    "DATABASE_URL": "postgresql+asyncpg://alaba:alaba_dev_password@localhost:5433/alaba_test",
+    "REDIS_URL": "redis://localhost:6380/1",
     "JWT_SECRET": "test_jwt_secret",
     "JWT_ALGORITHM": "HS256",
     "JWT_EXPIRY_HOURS": "24",
@@ -50,9 +50,9 @@ def env_setup(monkeypatch):
     monkeypatch.setenv("ENVIRONMENT", "dev")
     monkeypatch.setenv(
         "DATABASE_URL",
-        "postgresql+asyncpg://alaba:alaba_dev_password@localhost:5432/alaba_test",
+        "postgresql+asyncpg://alaba:alaba_dev_password@localhost:5433/alaba_test",
     )
-    monkeypatch.setenv("REDIS_URL", "redis://localhost:6379/1")
+    monkeypatch.setenv("REDIS_URL", "redis://localhost:6380/1")
     monkeypatch.setenv("JWT_SECRET", "test_jwt_secret")
     monkeypatch.setenv("JWT_ALGORITHM", "HS256")
     monkeypatch.setenv("JWT_EXPIRY_HOURS", "24")
