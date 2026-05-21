@@ -80,7 +80,22 @@ def env_setup(monkeypatch):
 
 
 import pytest_asyncio
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
+
+
+@pytest_asyncio.fixture(scope="session", autouse=True)
+async def truncate_tables():
+    """Wipe test data before each pytest session so runs are idempotent."""
+    from alaba.db import AsyncSessionLocal
+    async with AsyncSessionLocal() as session:
+        await session.execute(
+            text(
+                "TRUNCATE TABLE producers, admins, users, user_devices,"
+                " otp_codes, admin_actions RESTART IDENTITY CASCADE"
+            )
+        )
+        await session.commit()
 
 
 @pytest_asyncio.fixture

@@ -11,13 +11,22 @@ from alaba.db import get_db
 from alaba.integrations.otp import get_otp_provider
 from alaba.schemas.auth import (
     ActiveDeviceSummary,
+    AuthJwtOut,
+    LoginIn,
     OtpRequestIn,
     OtpRequestOut,
     OtpVerify409Body,
     OtpVerifyIn,
     OtpVerifyOut,
+    RegisterIn,
 )
 from alaba.security import decode_verify_ticket, mint_access_jwt, mint_verify_ticket
+from alaba.services.auth_service import (
+    AuthService,
+    EmailInUse,
+    InvalidCredentials,
+    PasswordTooShort,
+)
 from alaba.services.device_service import (
     DeviceCapReached,
     DeviceCooldownActive,
@@ -204,4 +213,66 @@ async def verify_otp(
         jwt=jwt_token,
         user_device_id=device.id,
         expires_at=expires_at,
+    )
+
+
+@router.post("/producer/register", response_model=AuthJwtOut)
+async def register_producer(body: RegisterIn, db: AsyncSession = Depends(get_db)):
+    svc = AuthService(db)
+    try:
+        producer = await svc.register_producer(
+            email=body.email, password=body.password, company_name=body.company_name,
+        )
+    except EmailInUse:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={"error": "email_in_use"},
+        )
+    except PasswordTooShort:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={"error": "password_too_short", "min_length": 10},
+        )
+    await db.commit()
+    s = get_settings()
+    token = mint_access_jwt(sub=str(producer.id), role="producer")
+    expires_at = datetime.now(UTC) + timedelta(hours=s.jwt_expiry_hours)
+    return AuthJwtOut(
+        jwt=token, expires_at=expires_at, role="producer", subject_id=producer.id,
+    )
+
+
+@router.post("/producer/login", response_model=AuthJwtOut)
+async def login_producer(body: LoginIn, db: AsyncSession = Depends(get_db)):
+    svc = AuthService(db)
+    try:
+        producer = await svc.login_producer(body.email, body.password)
+    except InvalidCredentials:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"error": "invalid_credentials"},
+        )
+    s = get_settings()
+    token = mint_access_jwt(sub=str(producer.id), role="producer")
+    expires_at = datetime.now(UTC) + timedelta(hours=s.jwt_expiry_hours)
+    return AuthJwtOut(
+        jwt=token, expires_at=expires_at, role="producer", subject_id=producer.id,
+    )
+
+
+@router.post("/admin/login", response_model=AuthJwtOut)
+async def login_admin(body: LoginIn, db: AsyncSession = Depends(get_db)):
+    svc = AuthService(db)
+    try:
+        admin = await svc.login_admin(body.email, body.password)
+    except InvalidCredentials:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"error": "invalid_credentials"},
+        )
+    s = get_settings()
+    token = mint_access_jwt(sub=str(admin.id), role="admin")
+    expires_at = datetime.now(UTC) + timedelta(hours=s.jwt_expiry_hours)
+    return AuthJwtOut(
+        jwt=token, expires_at=expires_at, role="admin", subject_id=admin.id,
     )

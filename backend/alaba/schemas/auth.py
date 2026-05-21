@@ -44,3 +44,21 @@ class OtpVerify409Body(BaseModel):
     error: str = "device_cap_reached"
     active_devices: list[ActiveDeviceSummary]
     verify_ticket: str
+
+
+class RegisterIn(BaseModel):
+    email: str = Field(min_length=4, max_length=255)
+    password: str = Field(min_length=1, max_length=1000)  # service validates min length
+    company_name: str | None = None
+
+
+class LoginIn(BaseModel):
+    email: str = Field(min_length=4, max_length=255)
+    password: str = Field(min_length=1, max_length=1000)
+
+
+class AuthJwtOut(BaseModel):
+    jwt: str
+    expires_at: datetime
+    role: str
+    subject_id: UUID

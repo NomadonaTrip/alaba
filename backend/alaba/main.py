@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from alaba.api import admin_users, auth, devices, health
+from alaba.api import admin_users, auth, devices, health, me
 from alaba.config import get_settings
 
 
@@ -25,6 +25,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router)
     app.include_router(devices.router)
     app.include_router(admin_users.router)
+    app.include_router(me.router)
     return app
 
 
